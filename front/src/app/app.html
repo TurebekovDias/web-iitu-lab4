@@ -1,0 +1,39 @@
+<main>
+  @if (auth.user(); as u) {
+    <h1>Привет, {{ u.username }}!</h1>
+    <button class="btn" (click)="logout()">Выйти</button>
+  } @else {
+    <h1>{{ mode() === 'login' ? 'Вход' : 'Регистрация' }}</h1>
+
+    <form #f="ngForm" (ngSubmit)="submit()">
+      @if (mode() === 'register') {
+        <input name="username" placeholder="Имя" [(ngModel)]="form.username" required minlength="3" #u="ngModel" />
+        @if (u.invalid && u.touched) {
+          <small class="err">Минимум 3 символа</small>
+        }
+      }
+
+      <input name="email" type="email" placeholder="Email" [(ngModel)]="form.email" required #m="ngModel" />
+      @if (m.invalid && m.touched) {
+        <small class="err">Введите корректный email</small>
+      }
+
+      <input name="password" type="password" placeholder="Пароль" [(ngModel)]="form.password" required minlength="8" #p="ngModel" />
+      @if (p.invalid && p.touched) {
+        <small class="err">Минимум 8 символов</small>
+      }
+
+      @if (errors().form) {
+        <p class="err">{{ errors().form }}</p>
+      }
+
+      <button class="btn" type="submit" [disabled]="f.invalid">
+        {{ mode() === 'login' ? 'Войти' : 'Создать аккаунт' }}
+      </button>
+    </form>
+
+    <button class="link" type="button" (click)="toggleMode()">
+      {{ mode() === 'login' ? 'Нет аккаунта? Регистрация' : 'Есть аккаунт? Вход' }}
+    </button>
+  }
+</main>
